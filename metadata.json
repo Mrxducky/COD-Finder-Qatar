@@ -1,0 +1,6 @@
+{
+  "name": "COD Finder Qatar",
+  "description": "Find the Nearest COD Machine in Seconds. Optimized for Talabat riders in Qatar.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -71,13 +71,7 @@ fun MachineDetailDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // Category Badge
-                    val badgeColor = when (machine.category) {
-                        "Ooredoo" -> Color(0xFF10B981)
-                        "Vodafone" -> Color(0xFFEF4444)
-                        "QNB" -> Color(0xFF3B82F6)
-                        "CBQ" -> Color(0xFF8B5CF6)
-                        else -> Color(0xFFF59E0B)
-                    }
+                    val badgeColor = Color(0xFFEF4444)
                     Box(
                         modifier = Modifier
                             .background(badgeColor.copy(alpha = 0.15f), RoundedCornerShape(12.dp))

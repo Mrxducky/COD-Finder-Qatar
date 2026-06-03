@@ -8,15 +8,15 @@ val TalabatOrangeDark = Color(0xFFD43F00)
 val TalabatOrangeLight = Color(0xFFFFEFEB)
 val TalabatOrangeAlpha = Color(0x26FF5A00)
 
-val SurfaceDark = Color(0xFF121214)
-val SurfaceDarkElevated = Color(0xFF1F1F24)
-val DarkBackground = Color(0xFF18181B)
+val SurfaceDark = Color(0xFF13171F)
+val SurfaceDarkElevated = Color(0xFF1E232E)
+val DarkBackground = Color(0xFF0C0F14)
 
 val LightBackground = Color(0xFFF9FAFB)
 val LightSurface = Color(0xFFFFFFFF)
 val TextDark = Color(0xFF1A1A1E)
-val TextLight = Color(0xFFE4E4E7)
-val TextMuted = Color(0xFF71717A)
+val TextLight = Color(0xFFF8FAFC)
+val TextMuted = Color(0xFF94A3B8)
 
 // Cash Limit Warning Indicators
 val AlertSafe = Color(0xFF10B981)   // Bright Emerald for Safe Balance

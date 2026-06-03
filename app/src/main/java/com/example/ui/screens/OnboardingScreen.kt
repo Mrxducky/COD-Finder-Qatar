@@ -36,7 +36,7 @@ fun OnboardingScreen(
     val steps = listOf(
         OnboardingStep(
             "Find Machines in",
-            "Instantly locate Ooredoo, Vodafone, QNB, or CBQ cash deposit kiosks closest to your coordinates.",
+            "Instantly locate active Vodafone cash deposit kiosks closest to your real-time coordinates.",
             Icons.Default.Map,
             "Seconds"
         ),

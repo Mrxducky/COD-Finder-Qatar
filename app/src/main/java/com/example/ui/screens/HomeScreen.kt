@@ -2,6 +2,7 @@ package com.example.ui.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -60,7 +61,7 @@ fun HomeScreen(
 
             // Top Search Bar & Voice Controls
             Card(
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF131722)),
                 shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -82,44 +83,24 @@ fun HomeScreen(
                                 text = currentHubName,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = Color.White
                             )
                         }
 
                         Spacer(modifier = Modifier.weight(1f))
 
-                        // Quick Hub Swapper Button
-                        var showHubDropdown by remember { mutableStateOf(false) }
-                        Box {
-                            IconButton(onClick = { showHubDropdown = true }) {
-                                Icon(
-                                    imageVector = Icons.Default.MyLocation,
-                                    tint = TalabatOrange,
-                                    contentDescription = "Simulate Location GPS Hub"
-                                )
+                        // Real GPS Center Button
+                        IconButton(
+                            onClick = {
+                                viewModel.startLocationTracking()
+                                Toast.makeText(context, "Centering map on live GPS...", Toast.LENGTH_SHORT).show()
                             }
-                            DropdownMenu(
-                                expanded = showHubDropdown,
-                                onDismissRequest = { showHubDropdown = false }
-                            ) {
-                                Text(
-                                    text = "SELECT SIMULATED RIDER GPS COORDS",
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                                )
-                                viewModel.presetHubs.forEach { hub ->
-                                    DropdownMenuItem(
-                                        text = { Text(hub.name, fontSize = 13.sp) },
-                                        onClick = {
-                                            viewModel.selectPresetHub(hub)
-                                            showHubDropdown = false
-                                            Toast.makeText(context, "Location updated to ${hub.name}", Toast.LENGTH_SHORT).show()
-                                        }
-                                    )
-                                }
-                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.MyLocation,
+                                tint = TalabatOrange,
+                                contentDescription = "Center on Live GPS"
+                            )
                         }
                     }
 
@@ -129,7 +110,7 @@ fun HomeScreen(
                     OutlinedTextField(
                         value = query,
                         onValueChange = { viewModel.setSearchQuery(it) },
-                        placeholder = { Text("Search by Area, ID, Branch...") },
+                        placeholder = { Text("Search by Area, ID, Branch...", color = Color.Gray) },
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TextMuted) },
                         trailingIcon = {
                             IconButton(
@@ -147,38 +128,39 @@ fun HomeScreen(
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
                             focusedBorderColor = TalabatOrange,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                            unfocusedBorderColor = Color(0xFF2C2F3D),
+                            focusedContainerColor = Color(0xFF0C0F14),
+                            unfocusedContainerColor = Color(0xFF0C0F14)
                         ),
                         modifier = Modifier.fillMaxWidth()
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Rapid Category Pills
-                    val categories = listOf("All", "Ooredoo", "Vodafone", "QNB", "CBQ")
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    // Vodafone machines directive
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFF1E1715), RoundedCornerShape(8.dp))
+                            .border(1.dp, Color(0xFF5C0F05), RoundedCornerShape(8.dp))
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        items(categories) { cat ->
-                            val isSelected = category == cat
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        color = if (isSelected) TalabatOrange else MaterialTheme.colorScheme.surfaceVariant,
-                                        shape = RoundedCornerShape(8.dp)
-                                    )
-                                    .clickable { viewModel.setCategory(cat) }
-                                    .padding(horizontal = 12.dp, vertical = 6.dp)
-                            ) {
-                                Text(
-                                    text = cat,
-                                    color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 12.sp
-                                )
-                            }
-                        }
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .background(Color(0xFFEF4444), CircleShape)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Qatar Vodafone Deposit Machines Only (Talabat Collection)",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.sp,
+                            color = Color(0xFFFCA5A5)
+                        )
                     }
                 }
             }
@@ -246,18 +228,18 @@ fun HomeScreen(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     Button(
-                                        onClick = { viewModel.startVoiceSim("MALL OF QATAR") },
+                                        onClick = { viewModel.startVoiceSim("BIN OMRAN") },
                                         shape = RoundedCornerShape(8.dp),
                                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                                     ) {
-                                        Text("Mall of Qatar", color = MaterialTheme.colorScheme.onSurface)
+                                        Text("Bin Omran", color = MaterialTheme.colorScheme.onSurface)
                                     }
                                     Button(
-                                        onClick = { viewModel.startVoiceSim("OOREDOO") },
+                                        onClick = { viewModel.startVoiceSim("SANNIYA") },
                                         shape = RoundedCornerShape(8.dp),
                                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                                     ) {
-                                        Text("Ooredoo", color = MaterialTheme.colorScheme.onSurface)
+                                        Text("Sanniya", color = MaterialTheme.colorScheme.onSurface)
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(12.dp))
@@ -269,14 +251,17 @@ fun HomeScreen(
                     }
                 }
 
-                // 80% Cash Limit REACHED banner
-                if (isThresholdReached && nearestMachine != null) {
+                // Nearest COD Finder Card (Always Active)
+                if (nearestMachine != null) {
                     val dist = viewModel.calculateDistance(riderPos.first, riderPos.second, nearestMachine!!.latitude, nearestMachine!!.longitude)
                     val eta = viewModel.getTravelEtaMinutes(dist, user.riderType)
 
                     Card(
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFECE0)),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (isThresholdReached) Color(0xFF2C1E16) else Color(0xFF131722)
+                        ),
                         shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp)
@@ -284,46 +269,76 @@ fun HomeScreen(
                     ) {
                         Row(
                             modifier = Modifier
-                                .padding(horizontal = 14.dp, vertical = 10.dp)
+                                .padding(horizontal = 14.dp, vertical = 12.dp)
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(40.dp)
-                                    .background(TalabatOrange.copy(alpha = 0.15f), CircleShape),
+                                    .size(42.dp)
+                                    .background(
+                                        if (isThresholdReached) TalabatOrange.copy(alpha = 0.15f) else Color(0xFF10B981).copy(alpha = 0.15f),
+                                        CircleShape
+                                    ),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Warning,
+                                    imageVector = if (isThresholdReached) Icons.Default.Warning else Icons.Default.LocationOn,
                                     contentDescription = null,
-                                    tint = TalabatOrange
+                                    tint = if (isThresholdReached) TalabatOrange else Color(0xFF10B981),
+                                    modifier = Modifier.size(24.dp)
                                 )
                             }
                             Spacer(modifier = Modifier.width(12.dp))
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    text = "Nearest COD Recommended",
+                                    text = if (isThresholdReached) "⚠️ Cash Threshold Reached (Deposit Now)" else "🟢 Active GPS Nearest COD",
                                     fontWeight = FontWeight.ExtraBold,
-                                    fontSize = 13.sp,
-                                    color = Color(0xFFD43F00)
+                                    fontSize = 11.sp,
+                                    color = if (isThresholdReached) Color(0xFFFF7A30) else Color(0xFF10B981)
                                 )
                                 Text(
-                                    text = "${nearestMachine!!.machineName} (${nearestMachine!!.area}) • ${String.format("%.1f km", dist)} (${eta}m)",
-                                    fontSize = 11.sp,
-                                    color = Color.DarkGray,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
+                                    text = nearestMachine!!.machineName,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp,
+                                    color = Color.White
+                                )
+                                Text(
+                                    text = "${nearestMachine!!.branchName} • ${String.format("%.2f km", dist)} (${eta} min)",
+                                    fontSize = 12.sp,
+                                    color = Color.LightGray
                                 )
                             }
+                            
+                            // Navigation Button
                             Button(
-                                onClick = { viewModel.selectMachineForDetail(nearestMachine) },
+                                onClick = {
+                                    // Open turn-by-turn navigation directly
+                                    val destinationUri = android.net.Uri.parse("google.navigation:q=${nearestMachine!!.latitude},${nearestMachine!!.longitude}&mode=d")
+                                    val mapIntent = android.content.Intent(android.content.Intent.ACTION_VIEW, destinationUri).apply {
+                                        setPackage("com.google.android.apps.maps")
+                                    }
+                                    try {
+                                        context.startActivity(mapIntent)
+                                    } catch (e: Exception) {
+                                        // fallback to normal google maps url
+                                        val fallbackIntent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(nearestMachine!!.googleMapsUrl))
+                                        context.startActivity(fallbackIntent)
+                                    }
+                                },
                                 colors = ButtonDefaults.buttonColors(containerColor = TalabatOrange),
-                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                                contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp),
                                 shape = RoundedCornerShape(8.dp),
-                                modifier = Modifier.height(28.dp).wrapContentWidth()
+                                modifier = Modifier.height(34.dp).wrapContentWidth()
                             ) {
-                                Text("Go", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                Icon(
+                                    imageVector = Icons.Default.Navigation, 
+                                    contentDescription = null, 
+                                    modifier = Modifier.size(14.dp),
+                                    tint = Color.White
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Go", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                             }
                         }
                     }

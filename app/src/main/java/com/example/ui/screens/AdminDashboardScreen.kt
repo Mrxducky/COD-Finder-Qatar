@@ -41,7 +41,7 @@ fun AdminDashboardScreen(
     var formArea by remember { mutableStateOf("") }
     var formLat by remember { mutableStateOf("") }
     var formLng by remember { mutableStateOf("") }
-    var formCategory by remember { mutableStateOf("Ooredoo") } // Options: Ooredoo, Vodafone, QNB, CBQ, Other
+    var formCategory by remember { mutableStateOf("Vodafone") } // Options: Vodafone
     var formIsBikeSelected by remember { mutableStateOf(true) }
     var formIsCarSelected by remember { mutableStateOf(true) }
 
@@ -49,10 +49,10 @@ fun AdminDashboardScreen(
     var csvInputText by remember { mutableStateOf("") }
 
     val sampleCsv = """#machine_id,machine_name,branch_name,area,latitude,longitude,google_maps_url,category
-SSM-LUS-50,Ooredoo Smart Vendor,Lusail Boulevard,Lusail,25.4211,51.5303,https://maps.google.com,Ooredoo,true,true
+VF-LUS-50,Vodafone Smart Vendor,Lusail Boulevard,Lusail,25.4211,51.5303,https://maps.google.com,Vodafone,true,true
 VF-SWQ-51,Vodafone Box,Souq Waqif Art Center,Souq Waqif,25.2872,51.5340,https://maps.google.com,Vodafone,true,false
-QNB-AWK-52,QNB Bulk CDM,Al Wakrah Souq,Al Wakrah,25.1712,51.6111,https://maps.google.com,QNB,false,true
-CBQ-CCD-53,CBQ CDM,City Center Tower B,West Bay,25.3268,51.5290,https://maps.google.com,CBQ,true,true"""
+VF-AWK-52,Vodafone CDM,Al Wakrah Souq,Al Wakrah,25.1712,51.6111,https://maps.google.com,Vodafone,false,true
+VF-CCD-53,Vodafone CDM,City Center Tower B,West Bay,25.3268,51.5290,https://maps.google.com,Vodafone,true,true"""
 
     Column(
         modifier = modifier
@@ -209,7 +209,7 @@ CBQ-CCD-53,CBQ CDM,City Center Tower B,West Bay,25.3268,51.5290,https://maps.goo
                 OutlinedTextField(
                     value = formName,
                     onValueChange = { formName = it },
-                    label = { Text("Machine Name (e.g., Ooredoo Smart Kiosk)") },
+                    label = { Text("Machine Name (e.g., Vodafone Smart Kiosk)") },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
                 )
@@ -260,7 +260,7 @@ CBQ-CCD-53,CBQ CDM,City Center Tower B,West Bay,25.3268,51.5290,https://maps.goo
                         Text("Category: $formCategory", color = MaterialTheme.colorScheme.onSurface)
                     }
                     DropdownMenu(expanded = showCatDrop, onDismissRequest = { showCatDrop = false }) {
-                        val cats = listOf("Ooredoo", "Vodafone", "QNB", "CBQ", "Other")
+                        val cats = listOf("Vodafone")
                         cats.forEach { cat ->
                             DropdownMenuItem(text = { Text(cat) }, onClick = { formCategory = cat; showCatDrop = false })
                         }

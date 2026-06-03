@@ -56,6 +56,18 @@ fun InteractiveQatarMap(
         val width = constraints.maxWidth.toFloat()
         val height = constraints.maxHeight.toFloat()
 
+        // Auto-center the map continuously on the rider's real GPS position.
+        LaunchedEffect(riderLat, riderLng, width, height, scale) {
+            if (width > 0f && height > 0f) {
+                val progressX = (riderLng - minLng) / (maxLng - minLng)
+                val progressY = 1.0 - ((riderLat - minLat) / (maxLat - minLat))
+                panOffset = Offset(
+                    x = (width / 2f) - (progressX * width * scale).toFloat(),
+                    y = (height / 2f) - (progressY * height * scale).toFloat()
+                )
+            }
+        }
+
         // Helper function to map GPS coordinates to Canvas pixel coordinates
         fun getPixelCoords(lat: Double, lng: Double): Offset {
             val progressX = (lng - minLng) / (maxLng - minLng)
@@ -65,16 +77,6 @@ fun InteractiveQatarMap(
             val x = (progressX * width * scale).toFloat() + panOffset.x
             val y = (progressY * height * scale).toFloat() + panOffset.y
             return Offset(x, y)
-        }
-
-        // Helper function to reverse map Canvas pixel Coordinates to GPS
-        fun getGpsCoords(pixelOffset: Offset): Pair<Double, Double> {
-            val relativeX = (pixelOffset.x - panOffset.x) / (width * scale)
-            val relativeY = 1.0 - ((pixelOffset.y - panOffset.y) / (height * scale))
-
-            val lng = minLng + (relativeX * (maxLng - minLng))
-            val lat = minLat + (relativeY * (maxLat - minLat))
-            return Pair(lat.toDouble(), lng.toDouble())
         }
 
         Canvas(
@@ -95,13 +97,6 @@ fun InteractiveQatarMap(
 
                         if (clickedMachine != null) {
                             onMachineSelected(clickedMachine)
-                        } else {
-                            // 2. Otherwise, move rider's location to this clicked point
-                            val targetGps = getGpsCoords(tapOffset)
-                            // Bound user coordinate changes
-                            val boundedLat = targetGps.first.coerceIn(minLat, maxLat)
-                            val boundedLng = targetGps.second.coerceIn(minLng, maxLng)
-                            onRiderLocationChanged(boundedLat, boundedLng)
                         }
                     }
                 }
@@ -214,14 +209,7 @@ fun InteractiveQatarMap(
             for (machine in machines) {
                 val pinPos = getPixelCoords(machine.latitude, machine.longitude)
 
-                // Decide color based on category
-                val pinColor = when (machine.category) {
-                    "Ooredoo" -> Color(0xFF10B981) // Emerald Green for Ooredoo
-                    "Vodafone" -> Color(0xFFEF4444) // Intense Red for Vodafone
-                    "QNB" -> Color(0xFF3B82F6) // Royal Blue for QNB
-                    "CBQ" -> Color(0xFF8B5CF6) // Purple for Commercial Bank
-                    else -> Color(0xFFF59E0B) // Amber
-                }
+                val pinColor = Color(0xFFEF4444) // Intense Red for Vodafone Kiosks
 
                 val isNearest = machine.machineId == nearestMachine?.machineId
 
@@ -283,23 +271,15 @@ fun InteractiveQatarMap(
                 .padding(vertical = 6.dp, horizontal = 10.dp)
         ) {
             Text(
-                text = "📍 Drag/Tap map to simulate location",
+                text = "🟢 Live GPS Tracking Active",
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(2.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(8.dp).background(Color(0xFF10B981)).aspectRatio(1f))
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("Ooredoo", color = Color.LightGray, style = MaterialTheme.typography.labelSmall)
-                Spacer(modifier = Modifier.width(8.dp))
                 Box(modifier = Modifier.size(8.dp).background(Color(0xFFEF4444)).aspectRatio(1f))
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("Vodafone", color = Color.LightGray, style = MaterialTheme.typography.labelSmall)
-                Spacer(modifier = Modifier.width(8.dp))
-                Box(modifier = Modifier.size(8.dp).background(Color(0xFF3B82F6)).aspectRatio(1f))
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("Banks", color = Color.LightGray, style = MaterialTheme.typography.labelSmall)
+                Text("Vodafone Kiosks / CDMs only", color = Color.LightGray, style = MaterialTheme.typography.labelSmall)
             }
         }
     }

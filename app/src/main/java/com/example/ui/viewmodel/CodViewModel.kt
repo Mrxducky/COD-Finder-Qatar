@@ -1,11 +1,15 @@
 package com.example.ui.viewmodel
 
+import android.annotation.SuppressLint
 import android.app.Application
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.local.CodMachineEntity
 import com.example.data.local.UserEntity
 import com.example.data.repository.CodRepository
+import com.google.android.gms.location.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.math.*
@@ -15,22 +19,23 @@ data class LocationHub(val name: String, val lat: Double, val lng: Double)
 class CodViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = CodRepository(application)
+    private val fusedLocationClient: FusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(application)
+    }
 
-    // Preset hubs for easy GPS simulation in Qatar
-    val presetHubs = listOf(
-        LocationHub("Souq Waqif Hub", 25.2867, 51.5333),
-        LocationHub("Doha West Bay Hub", 25.3200, 51.5200),
-        LocationHub("Hamad Hospital Hub", 25.2925, 51.4930),
-        LocationHub("Lusail Marina Hub", 25.3900, 51.5400),
-        LocationHub("Al Wakrah Hub", 25.1764, 51.6033),
-        LocationHub("Industrial Area Hub", 25.2000, 51.4000)
-    )
+    private var locationCallback: LocationCallback? = null
 
-    // Current Rider simulated location
-    private val _riderLocation = MutableStateFlow(Pair(25.2867, 51.5333)) // Matches Souq Waqif
+    private val _isLiveGpsActive = MutableStateFlow(false)
+    val isLiveGpsActive: StateFlow<Boolean> = _isLiveGpsActive.asStateFlow()
+
+    // Preset hubs (empty as simulated location is removed)
+    val presetHubs = emptyList<LocationHub>()
+
+    // Current Rider location (device GPS only, defaults to Doha Souq Waqif location for initial cold start)
+    private val _riderLocation = MutableStateFlow(Pair(25.2867, 51.5333))
     val riderLocation: StateFlow<Pair<Double, Double>> = _riderLocation.asStateFlow()
 
-    private val _selectedHubName = MutableStateFlow("Souq Waqif Hub")
+    private val _selectedHubName = MutableStateFlow("Live GPS Active")
     val selectedHubName: StateFlow<String> = _selectedHubName.asStateFlow()
 
     // Selected machine for dedicated details sheet
@@ -132,25 +137,91 @@ class CodViewModel(application: Application) : AndroidViewModel(application) {
     // Live nearest machine calculation based on current locations
     val nearestMachine: StateFlow<CodMachineEntity?> = combine(
         allMachines,
-        _riderLocation,
-        currentUser
-    ) { list, location, user ->
-        val bikeOnly = user?.riderType == "BIKE"
-        val carOnly = user?.riderType == "CAR"
-        val filtered = list.filter {
-            if (bikeOnly) it.isBikeFriendly else if (carOnly) it.isCarFriendly else true
-        }
+        _riderLocation
+    ) { list, location ->
         val (lat, lng) = location
-        filtered.minByOrNull { m ->
+        list.sortedBy { m ->
             calculateDistance(lat, lng, m.latitude, m.longitude)
-        }
+        }.firstOrNull()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     // --- Actions ---
 
+    @SuppressLint("MissingPermission")
+    fun startLocationTracking() {
+        if (locationCallback != null) return // Already tracking
+
+        val context = getApplication<Application>()
+        val hasFine = ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasCoarse = ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (!hasFine && !hasCoarse) {
+            _selectedHubName.value = "Permissions Missing"
+            return
+        }
+
+        _isLiveGpsActive.value = true
+        _selectedHubName.value = "GPS Tracking Active"
+
+        // Update location every 5 seconds or every 20 meters movement.
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000L).apply {
+            setMinUpdateDistanceMeters(20f)
+            setMinUpdateIntervalMillis(3000L)
+        }.build()
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(result: LocationResult) {
+                val lastLoc = result.lastLocation ?: return
+                _riderLocation.value = Pair(lastLoc.latitude, lastLoc.longitude)
+                _selectedHubName.value = "GPS Tracking Active"
+                _isLiveGpsActive.value = true
+            }
+        }
+
+        try {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback!!,
+                android.os.Looper.getMainLooper()
+            )
+
+            // Direct initialize
+            fusedLocationClient.lastLocation.addOnSuccessListener { loc ->
+                if (loc != null) {
+                    _riderLocation.value = Pair(loc.latitude, loc.longitude)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun stopLocationTracking() {
+        locationCallback?.let {
+            try {
+                fusedLocationClient.removeLocationUpdates(it)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            locationCallback = null
+        }
+        _isLiveGpsActive.value = false
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopLocationTracking()
+    }
+
     fun setRiderLocation(lat: Double, lng: Double) {
         _riderLocation.value = Pair(lat, lng)
-        _selectedHubName.value = "Custom Marked Position"
+        _selectedHubName.value = "GPS Simulated Position"
     }
 
     fun selectPresetHub(hub: LocationHub) {
@@ -287,7 +358,7 @@ class CodViewModel(application: Application) : AndroidViewModel(application) {
                 _searchQuery.value = phraseSelected
             } else {
                 // Sample random phrase
-                val sampleQueries = listOf("West Bay Ooredoo", "nearest QNB", "Al Rayyan machine", "CBQ deposit")
+                val sampleQueries = listOf("Sanniya Vodafone", "nearest deposit", "Al Rayyan branch", "Bin Omran kiosk")
                 val chosen = sampleQueries.random()
                 _voiceStatusText.value = "Recognized: \"$chosen\""
                 kotlinx.coroutines.delay(850)

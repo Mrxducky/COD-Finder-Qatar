@@ -225,13 +225,7 @@ fun MachineListScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             // Category Icon Accent Circle Logo
-                            val catColor = when (machine.category) {
-                                "Ooredoo" -> Color(0xFF10B981)
-                                "Vodafone" -> Color(0xFFEF4444)
-                                "QNB" -> Color(0xFF3B82F6)
-                                "CBQ" -> Color(0xFF8B5CF6)
-                                else -> Color(0xFFF59E0B)
-                            }
+                            val catColor = Color(0xFFEF4444)
                             Box(
                                 modifier = Modifier
                                     .size(44.dp)
@@ -239,10 +233,7 @@ fun MachineListScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
-                                    imageVector = when (machine.category) {
-                                        "Ooredoo", "Vodafone" -> Icons.Default.SmartButton
-                                        else -> Icons.Default.AccountBalance
-                                    },
+                                    imageVector = Icons.Default.SmartButton,
                                     contentDescription = null,
                                     tint = catColor,
                                     modifier = Modifier.size(22.dp)
@@ -269,22 +260,40 @@ fun MachineListScreen(
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Row(
-                                    verticalAlignment = Alignment.CenterVertically
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                                 ) {
-                                    // Bike compatibility indicator tag
-                                    Icon(
-                                        imageVector = if (machine.isBikeFriendly) Icons.Default.DirectionsBike else Icons.Default.DirectionsCar,
-                                        contentDescription = null,
-                                        tint = TalabatOrange,
-                                        modifier = Modifier.size(14.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        text = if (machine.isBikeFriendly) "Bike OK" else "Car Parking Preferred",
-                                        fontSize = 10.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = TextMuted
-                                    )
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        // Bike compatibility indicator tag
+                                        Icon(
+                                            imageVector = if (machine.isBikeFriendly) Icons.Default.DirectionsBike else Icons.Default.DirectionsCar,
+                                            contentDescription = null,
+                                            tint = TalabatOrange,
+                                            modifier = Modifier.size(14.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = if (machine.isBikeFriendly) "Bike OK" else "Car Parking Preferred",
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = TextMuted
+                                        )
+                                    }
+
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(6.dp)
+                                                .background(Color(0xFF10B981), CircleShape)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = "Live OK",
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color(0xFF047857)
+                                        )
+                                    }
                                 }
                             }
 

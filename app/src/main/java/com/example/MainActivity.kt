@@ -16,28 +16,68 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ui.screens.LoginScreen
 import com.example.ui.screens.MainHostScreen
 import com.example.ui.screens.OnboardingScreen
+import com.example.ui.screens.RiderTypeScreen
 import com.example.ui.screens.SplashScreen
 import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.theme.TalabatOrange
 import com.example.ui.viewmodel.CodViewModel
+import androidx.activity.result.contract.ActivityResultContracts
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 
 enum class AppScreenState {
     Splash,
     Onboarding,
     Login,
+    RiderType,
     MainHost
 }
 
 class MainActivity : ComponentActivity() {
+    private var _viewModel: CodViewModel? = null
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineGranted = permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseGranted = permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        if (fineGranted || coarseGranted) {
+            _viewModel?.startLocationTracking()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
                 val viewModel: CodViewModel = viewModel()
+                _viewModel = viewModel
                 val currentUserState by viewModel.currentUser.collectAsState()
                 
+                LaunchedEffect(Unit) {
+                    val fine = ContextCompat.checkSelfPermission(
+                        this@MainActivity,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                    val coarse = ContextCompat.checkSelfPermission(
+                        this@MainActivity,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                    
+                    if (fine || coarse) {
+                        viewModel.startLocationTracking()
+                    } else {
+                        requestPermissionLauncher.launch(
+                            arrayOf(
+                                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                android.Manifest.permission.ACCESS_COARSE_LOCATION
+                            )
+                        )
+                    }
+                }
+
                 var currentScreen by remember { mutableStateOf(AppScreenState.Splash) }
+                var tempPhone by remember { mutableStateOf("+974 55 123 456") }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(
@@ -62,10 +102,20 @@ class MainActivity : ComponentActivity() {
                             }
                             AppScreenState.Login -> {
                                 LoginScreen(
-                                    onLoginSuccess = { name, email, riderType ->
-                                        // Save to database, then transition
-                                        viewModel.updateRiderProfile(name, email, riderType)
+                                    onLoginSuccess = { phone, _ ->
+                                        tempPhone = phone
+                                        currentScreen = AppScreenState.RiderType
+                                    }
+                                )
+                            }
+                            AppScreenState.RiderType -> {
+                                RiderTypeScreen(
+                                    onTypeSelected = { selectedType ->
+                                        viewModel.updateRiderProfile("John Rider", tempPhone, selectedType)
                                         currentScreen = AppScreenState.MainHost
+                                    },
+                                    onBack = {
+                                        currentScreen = AppScreenState.Login
                                     }
                                 )
                             }

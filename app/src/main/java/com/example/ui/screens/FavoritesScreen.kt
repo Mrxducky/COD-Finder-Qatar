@@ -169,13 +169,7 @@ fun FavoritesScreen(
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            val catColor = when (machine.category) {
-                                "Ooredoo" -> Color(0xFF10B981)
-                                "Vodafone" -> Color(0xFFEF4444)
-                                "QNB" -> Color(0xFF3B82F6)
-                                "CBQ" -> Color(0xFF8B5CF6)
-                                else -> Color(0xFFF59E0B)
-                            }
+                            val catColor = Color(0xFFEF4444)
 
                             Box(
                                 modifier = Modifier

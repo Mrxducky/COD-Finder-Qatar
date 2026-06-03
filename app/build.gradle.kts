@@ -58,6 +58,25 @@ android {
   testOptions { unitTests { isIncludeAndroidResources = true } }
 }
 
+val androidComponents = extensions.getByType<com.android.build.api.variant.ApplicationAndroidComponentsExtension>()
+androidComponents.onVariants { variant ->
+  variant.outputs.forEach { output ->
+    try {
+      val method = output.javaClass.getMethod("getOutputFileName")
+      val result = method.invoke(output)
+      if (result is org.gradle.api.provider.Property<*>) {
+        @Suppress("UNCHECKED_CAST")
+        (result as org.gradle.api.provider.Property<String>).set("COD-Finder-Qatar.apk")
+      } else if (result is String) {
+        val setMethod = output.javaClass.getMethod("setOutputFileName", String::class.java)
+        setMethod.invoke(output, "COD-Finder-Qatar.apk")
+      }
+    } catch (e: Exception) {
+      // Safe fallback
+    }
+  }
+}
+
 // Configure the Secrets Gradle Plugin to use .env and .env.example files
 // to match the convention used in Web projects.
 secrets {

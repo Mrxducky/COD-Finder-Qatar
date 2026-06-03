@@ -2,15 +2,15 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Talabat Brand Visual Identity (Vibrant High-Contrast Orange & Clean Slate)
-val TalabatOrange = Color(0xFFFF5A00)
-val TalabatOrangeDark = Color(0xFFD43F00)
-val TalabatOrangeLight = Color(0xFFFFEFEB)
-val TalabatOrangeAlpha = Color(0x26FF5A00)
+// Modern Blue/Cyan Visual Identity (Vibrant High-Contrast Eye-catching Sky Blue & Clean Royal Blue)
+val TalabatOrange = Color(0xFF0EA5E9)      // Radiant Sky Blue (replaced orange)
+val TalabatOrangeDark = Color(0xFF0284C7)  // Deep Ocean Blue
+val TalabatOrangeLight = Color(0xFFE0F2FE) // Soft Light Blue Wash
+val TalabatOrangeAlpha = Color(0x260EA5E9) // Translucent Sky Blue
 
-val SurfaceDark = Color(0xFF13171F)
-val SurfaceDarkElevated = Color(0xFF1E232E)
-val DarkBackground = Color(0xFF0C0F14)
+val SurfaceDark = Color(0xFF1E293B)        // Luxurious Dark slate-800 instead of black
+val SurfaceDarkElevated = Color(0xFF334155) // Slate-700
+val DarkBackground = Color(0xFF0F172A)     // Rich Dark Slate-900 instead of pitch-black
 
 val LightBackground = Color(0xFFF9FAFB)
 val LightSurface = Color(0xFFFFFFFF)

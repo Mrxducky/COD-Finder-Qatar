@@ -49,9 +49,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
-                val viewModel: CodViewModel = viewModel()
-                _viewModel = viewModel
+            val viewModel: CodViewModel = viewModel()
+            _viewModel = viewModel
+            val isDarkTheme by viewModel.isDarkTheme.collectAsState()
+            
+            MyApplicationTheme(darkTheme = isDarkTheme) {
                 val currentUserState by viewModel.currentUser.collectAsState()
                 
                 LaunchedEffect(Unit) {

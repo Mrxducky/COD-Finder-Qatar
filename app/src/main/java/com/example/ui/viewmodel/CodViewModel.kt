@@ -66,6 +66,14 @@ class CodViewModel(application: Application) : AndroidViewModel(application) {
     private val _isPremiumUser = MutableStateFlow(false)
     val isPremiumUser: StateFlow<Boolean> = _isPremiumUser.asStateFlow()
 
+    // Light / Dark Theme State
+    private val _isDarkTheme = MutableStateFlow(true)
+    val isDarkTheme: StateFlow<Boolean> = _isDarkTheme.asStateFlow()
+
+    fun toggleTheme() {
+        _isDarkTheme.value = !_isDarkTheme.value
+    }
+
     // Core Database Flows
     val currentUser: StateFlow<UserEntity?> = repository.getUser("default_user")
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
@@ -256,12 +264,7 @@ class CodViewModel(application: Application) : AndroidViewModel(application) {
             if (currentFavs.contains(machineId)) {
                 currentFavs.remove(machineId)
             } else {
-                // Unlimited for Premium, Limit to 3 for Free tier
-                if (!_isPremiumUser.value && currentFavs.size >= 3) {
-                    // Trigger upgrade notification logic (handled in UI via Toast)
-                } else {
-                    currentFavs.add(machineId)
-                }
+                currentFavs.add(machineId)
             }
             repository.saveUser(user.copy(favoriteMachines = currentFavs.joinToString(",")))
         }

@@ -61,7 +61,7 @@ fun HomeScreen(
 
             // Top Search Bar & Voice Controls
             Card(
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF131722)),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -83,7 +83,7 @@ fun HomeScreen(
                                 text = currentHubName,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 
@@ -110,8 +110,8 @@ fun HomeScreen(
                     OutlinedTextField(
                         value = query,
                         onValueChange = { viewModel.setSearchQuery(it) },
-                        placeholder = { Text("Search by Area, ID, Branch...", color = Color.Gray) },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TextMuted) },
+                        placeholder = { Text("Search by Area, ID, Branch...", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)) },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TalabatOrange) },
                         trailingIcon = {
                             IconButton(
                                 onClick = {
@@ -121,19 +121,19 @@ fun HomeScreen(
                                 Icon(
                                     imageVector = Icons.Default.Mic,
                                     contentDescription = "Simulate Voice Search",
-                                    tint = if (isVoiceActive) TalabatOrange else TextMuted
+                                    tint = if (isVoiceActive) TalabatOrange else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                                 )
                             }
                         },
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                             focusedBorderColor = TalabatOrange,
-                            unfocusedBorderColor = Color(0xFF2C2F3D),
-                            focusedContainerColor = Color(0xFF0C0F14),
-                            unfocusedContainerColor = Color(0xFF0C0F14)
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                            focusedContainerColor = MaterialTheme.colorScheme.surface,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface
                         ),
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -258,7 +258,7 @@ fun HomeScreen(
 
                     Card(
                         colors = CardDefaults.cardColors(
-                            containerColor = if (isThresholdReached) Color(0xFF2C1E16) else Color(0xFF131722)
+                            containerColor = if (isThresholdReached) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surfaceVariant
                         ),
                         shape = RoundedCornerShape(16.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
@@ -277,7 +277,7 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .size(42.dp)
                                     .background(
-                                        if (isThresholdReached) TalabatOrange.copy(alpha = 0.15f) else Color(0xFF10B981).copy(alpha = 0.15f),
+                                        if (isThresholdReached) MaterialTheme.colorScheme.error.copy(alpha = 0.15f) else Color(0xFF10B981).copy(alpha = 0.15f),
                                         CircleShape
                                     ),
                                 contentAlignment = Alignment.Center
@@ -285,7 +285,7 @@ fun HomeScreen(
                                 Icon(
                                     imageVector = if (isThresholdReached) Icons.Default.Warning else Icons.Default.LocationOn,
                                     contentDescription = null,
-                                    tint = if (isThresholdReached) TalabatOrange else Color(0xFF10B981),
+                                    tint = if (isThresholdReached) MaterialTheme.colorScheme.error else Color(0xFF10B981),
                                     modifier = Modifier.size(24.dp)
                                 )
                             }
@@ -295,7 +295,7 @@ fun HomeScreen(
                                     text = if (isThresholdReached) "⚠️ Cash Threshold Reached (Deposit Now)" else "🟢 Active GPS Nearest COD",
                                     fontWeight = FontWeight.ExtraBold,
                                     fontSize = 11.sp,
-                                    color = if (isThresholdReached) Color(0xFFFF7A30) else Color(0xFF10B981)
+                                    color = if (isThresholdReached) MaterialTheme.colorScheme.error else Color(0xFF10B981)
                                 )
                                 Text(
                                     text = nearestMachine!!.machineName,

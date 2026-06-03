@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.local.UserEntity
 import com.example.ui.viewmodel.CodViewModel
-import com.example.ui.theme.DarkBackground
 import com.example.ui.theme.TalabatOrange
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,6 +41,7 @@ fun ProfileScreen(
 
     val riderType = user.riderType
     val codLimitText = if (riderType == "BIKE") "900 QAR" else "2300 QAR"
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -49,10 +49,10 @@ fun ProfileScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Profile",
+                        text = "Profile Settings",
                         fontWeight = FontWeight.Black,
                         fontSize = 18.sp,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 },
                 actions = {
@@ -60,12 +60,12 @@ fun ProfileScreen(
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "Settings",
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = DarkBackground
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         }
@@ -73,13 +73,13 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(DarkBackground)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
                 .verticalScroll(scrollState)
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Giant Avatar with Person Silhouette Icon matching Mockup 10
+            // Giant Avatar with Person Silhouette Icon
             Box(
                 modifier = Modifier
                     .size(100.dp)
@@ -103,13 +103,13 @@ fun ProfileScreen(
                 text = user.name,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Text(
-                text = user.email, // Phone number doubles here
+                text = user.email,
                 fontSize = 14.sp,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 4.dp)
             )
@@ -148,6 +148,17 @@ fun ProfileScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                // Row: App Theme selector (Light Mode vs Dark Mode button)
+                ProfileMenuRowItem(
+                    icon = if (isDarkTheme) Icons.Default.DarkMode else Icons.Default.LightMode,
+                    title = "App Theme",
+                    valueText = if (isDarkTheme) "Dark" else "Light",
+                    onClick = {
+                        viewModel.toggleTheme()
+                        Toast.makeText(context, "Switched to ${if (isDarkTheme) "Light" else "Dark"} Mode", Toast.LENGTH_SHORT).show()
+                    }
+                )
+
                 // Row 1: Vehicle Type (Toggles vehicle state)
                 ProfileMenuRowItem(
                     icon = Icons.Default.TwoWheeler,
@@ -203,7 +214,9 @@ fun ProfileScreen(
 
                 // Row 6: Logout (Red warning row)
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1315)),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (isDarkTheme) Color(0xFF1E1416) else Color(0xFFFFECEF)
+                    ),
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -222,7 +235,7 @@ fun ProfileScreen(
                             Icon(
                                 imageVector = Icons.Default.ExitToApp,
                                 contentDescription = null,
-                                tint = Color(0xFFEF4444), // Crimson logout red
+                                tint = Color(0xFFEF4444),
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(modifier = Modifier.width(14.dp))
@@ -257,7 +270,9 @@ fun ProfileMenuRowItem(
     onClick: () -> Unit
 ) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF131722)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -292,7 +307,7 @@ fun ProfileMenuRowItem(
                     text = title,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -301,7 +316,7 @@ fun ProfileMenuRowItem(
                     Text(
                         text = valueText,
                         fontSize = 13.sp,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(end = 8.dp)
                     )
@@ -310,7 +325,7 @@ fun ProfileMenuRowItem(
                 Icon(
                     imageVector = Icons.Default.ChevronRight,
                     contentDescription = null,
-                    tint = Color.LightGray,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                     modifier = Modifier.size(18.dp)
                 )
             }

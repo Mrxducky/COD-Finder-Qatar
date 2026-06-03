@@ -37,7 +37,7 @@ fun RiderTypeScreen(
                     Text(
                         text = "Rider Type",
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 },
                 navigationIcon = {
@@ -45,12 +45,12 @@ fun RiderTypeScreen(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DarkBackground
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         }
@@ -58,7 +58,7 @@ fun RiderTypeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(DarkBackground)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
                 .padding(24.dp),
             verticalArrangement = Arrangement.SpaceBetween,
@@ -68,7 +68,7 @@ fun RiderTypeScreen(
                 Text(
                     text = "Select your vehicle type",
                     fontSize = 14.sp,
-                    color = Color.LightGray,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
@@ -76,7 +76,7 @@ fun RiderTypeScreen(
                 // Bike Rider selection card (900 Limit)
                 Card(
                     onClick = { onTypeSelected("BIKE") },
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF131722)),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -111,13 +111,13 @@ fun RiderTypeScreen(
                                 text = "Bike Rider",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = "COD Limit",
                                 fontSize = 12.sp,
-                                color = Color.Gray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
@@ -133,7 +133,7 @@ fun RiderTypeScreen(
                 // Car Rider selection card (2300 Limit)
                 Card(
                     onClick = { onTypeSelected("CAR") },
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF131722)),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -166,13 +166,13 @@ fun RiderTypeScreen(
                                 text = "Car Rider",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = "COD Limit",
                                 fontSize = 12.sp,
-                                color = Color.Gray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(

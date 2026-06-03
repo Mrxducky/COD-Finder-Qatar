@@ -365,47 +365,6 @@ fun MachineDetailDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
-
-                // Extra monetization highlight if they are in Free Tier
-                if (!isPremium) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Card(
-                        onClick = onUnlockPremiumClick,
-                        colors = CardDefaults.cardColors(containerColor = TalabatOrangeAlpha),
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Diamond,
-                                contentDescription = null,
-                                tint = TalabatOrange
-                            )
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "Unlock Premium Navigation",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 13.sp,
-                                    color = TalabatOrangeDark
-                                )
-                                Text(
-                                    text = "Get real-time traffic, route optimization & limitless favorites.",
-                                    fontSize = 11.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            Icon(
-                                imageVector = Icons.Default.ChevronRight,
-                                contentDescription = null,
-                                tint = TalabatOrange
-                            )
-                        }
-                    }
-                }
             }
         }
     }

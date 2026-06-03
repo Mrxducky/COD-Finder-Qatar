@@ -44,11 +44,11 @@ fun HistoryScreen(
                         text = "History",
                         fontWeight = FontWeight.Black,
                         fontSize = 18.sp,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = DarkBackground
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         }
@@ -56,14 +56,14 @@ fun HistoryScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(DarkBackground)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
                 .verticalScroll(scrollState)
                 .padding(20.dp)
         ) {
             // Visual telemetry metric card with path drawing graph inside matching Mockup 9
             Card(
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF131722)),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -89,14 +89,14 @@ fun HistoryScreen(
                                 text = "420",
                                 fontSize = 36.sp,
                                 fontWeight = FontWeight.Black,
-                                color = Color.White
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = "QAR",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(bottom = 5.dp)
                             )
                         }
@@ -104,7 +104,7 @@ fun HistoryScreen(
                         Text(
                             text = "Total COD Collected",
                             fontSize = 12.sp,
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.padding(top = 2.dp)
                         )
@@ -199,7 +199,7 @@ fun TimelineComponentItem(
     cashAmount: String
 ) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF131722)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -235,13 +235,13 @@ fun TimelineComponentItem(
                         text = title,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = subtitle,
                         fontSize = 11.sp,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -251,7 +251,7 @@ fun TimelineComponentItem(
                 text = cashAmount,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Black,
-                color = Color(0xFF10B981) // Green accent positive history item
+                color = Color(0xFF10B981) // Keep neon emerald green for successful payment visual
             )
         }
     }

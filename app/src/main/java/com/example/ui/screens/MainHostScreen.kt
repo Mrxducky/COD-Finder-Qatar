@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.local.UserEntity
 import com.example.ui.viewmodel.CodViewModel
-import com.example.ui.screens.CodOverviewScreen
 import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.MachineListScreen
 import com.example.ui.screens.HistoryScreen
@@ -32,7 +31,6 @@ sealed class BottomTab(
     val inactiveIcon: ImageVector
 ) {
     object HomeTab : BottomTab("HOME", "Home", Icons.Filled.Home, Icons.Outlined.Home)
-    object MapTab : BottomTab("MAP", "Map", Icons.Filled.Map, Icons.Outlined.Map)
     object MachinesTab : BottomTab("MACHINES", "Machines", Icons.Filled.Search, Icons.Outlined.Search)
     object HistoryTab : BottomTab("HISTORY", "History", Icons.Filled.History, Icons.Outlined.History)
     object ProfileTab : BottomTab("PROFILE", "Profile", Icons.Filled.Person, Icons.Outlined.Person)
@@ -50,7 +48,6 @@ fun MainHostScreen(
 
     val tabs = listOf(
         BottomTab.HomeTab,
-        BottomTab.MapTab,
         BottomTab.MachinesTab,
         BottomTab.HistoryTab,
         BottomTab.ProfileTab
@@ -60,7 +57,7 @@ fun MainHostScreen(
         modifier = modifier.fillMaxSize(),
         bottomBar = {
             NavigationBar(
-                containerColor = Color(0xFF131722),
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 tonalElevation = 8.dp,
                 windowInsets = NavigationBarDefaults.windowInsets
             ) {
@@ -73,7 +70,7 @@ fun MainHostScreen(
                             Icon(
                                 imageVector = if (isSelected) tab.activeIcon else tab.inactiveIcon,
                                 contentDescription = tab.label,
-                                tint = if (isSelected) TalabatOrange else Color.Gray
+                                tint = if (isSelected) TalabatOrange else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                             )
                         },
                         label = {
@@ -81,11 +78,15 @@ fun MainHostScreen(
                                 text = tab.label,
                                 fontSize = 10.sp,
                                 fontWeight = if (isSelected) FontWeight.Black else FontWeight.Medium,
-                                color = if (isSelected) TalabatOrange else Color.Gray
+                                color = if (isSelected) TalabatOrange else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                             )
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            indicatorColor = TalabatOrangeAlpha
+                            indicatorColor = TalabatOrangeAlpha,
+                            selectedIconColor = TalabatOrange,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                            selectedTextColor = TalabatOrange,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                         )
                     )
                 }
@@ -99,16 +100,6 @@ fun MainHostScreen(
         ) {
             when (activeTab) {
                 BottomTab.HomeTab -> {
-                    CodOverviewScreen(
-                        viewModel = viewModel,
-                        user = user,
-                        onNavigateToTab = { targetRoute ->
-                            val matched = tabs.find { it.route == targetRoute }
-                            if (matched != null) activeTab = matched
-                        }
-                    )
-                }
-                BottomTab.MapTab -> {
                     HomeScreen(
                         viewModel = viewModel,
                         user = user,
